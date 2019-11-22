@@ -23,4 +23,4 @@ __proto__: Object
 
 return price from api of current stock and then let the user decide weather they want to buy or sell then then add to the bank account.
 
-strech goals incoprate some drop downs html and css goals basically.
+strech goals incoprate some drop downs and css goals basically.
