@@ -10,3 +10,12 @@ body{
 #tradeDiv{
   background:red;
 }
+p{
+  background: pink;
+}
+button{
+  cursor: pointer;
+}
+footer{
+
+}
