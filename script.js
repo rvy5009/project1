@@ -22,8 +22,8 @@ const bankDiv = document.querySelector("#bankDiv")
 const stockDiv = document.querySelector("#stockDiv")
 const tradeDiv = document.querySelector("#tradeDiv")
 const stockP = document.querySelector("#stockP")
+const calBankDiv = document.querySelector("#calculateBank")
 
-// function getHoursAndMinutes() {
 var date = new Date
 var hours = function getHours() {
   if (date.getHours().length < 2) {
@@ -32,21 +32,15 @@ var hours = function getHours() {
     return date.getHours()
   }
 }
+
 var minutes = function getMinutes() {
   if (date.getMinutes() < 10) {
-    return `0${date.getMinutes()-2}`
+    return `0${date.getMinutes()-1}`
   } else {
-    return date.getMinutes()-2
+    return date.getMinutes()-1
   }
 }
 
-// var minutes = date.getMinutes()
-//   if (hours > 16 || hours < 9) {
-//     return 16+":"+00
-//   } else {
-//     return `${hours}:${minutes}`
-//   }
-// }
 var bankAccount = []
 var stocksOwned = []
 var raysCommission = 0
@@ -57,6 +51,7 @@ stockButton.addEventListener("click", async function () {
   let stockName = stockInput.value.toUpperCase()
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
   let stockPrice = response.data["Time Series (1min)"]
+  console.log(stockPrice)
   let hoursIn = hours()
   let minutesIn = minutes()
   console.log(minutesIn)
@@ -106,7 +101,7 @@ buyButton.addEventListener("click", async function () {
 
     const addStockToLog = document.createElement("div")
     addStockToLog.innerHTML = `Bought ${stockName}@${stockTimed}`
-    tradeDiv.appendChild(addStockToLog)
+    tradeDiv.appendChild(addStockToLog)    
   }
 })
 
@@ -118,7 +113,7 @@ sellButton.addEventListener("click", async function () {
   let stockName = stockInput.value.toUpperCase()
   if (stocksOwned.includes(stockName)) {
 
-    raysCommission++
+    
 
     let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
     let stockPrice = response.data["Time Series (1min)"]
@@ -138,6 +133,8 @@ sellButton.addEventListener("click", async function () {
     addStockToLog.innerHTML = `Sold ${stockName}@${stockTimed}`
     tradeDiv.appendChild(addStockToLog)
     stocksOwned.splice(stocksOwned.indexOf(stockName, 1))
+
+    raysCommission++
   } else {
     alert("No shorts allowed")
   }
@@ -161,7 +158,7 @@ bankButton.addEventListener("click", function () {
 
   let bankAmount = parseInt(bankInput.value, 10)
   if (bankAmount) {
-    if (bankAmount < calculateBank(bankAccount)) {
+    if (calculateBank(bankAccount< 0 )) {
       alert("Insufficient funds")
     } else {
       bankAccount.push(bankAmount)

@@ -11,25 +11,30 @@
 </head>
 
 <body>
-  <h1>Stock Trader</h1>
+  <h1>Stock Trader
+    <div id = "outerTradeBankDiv">
+      My Transactions
+      <div id="tradeBankDiv">
+          <div id="tradeDiv">Trade Log </div>
+          <div id="bankDiv">Your Bank Account</div>
+      </div>
+    </div>
+    <form id="bankForm">
+      <input type="text" id="bankInput" placeholder="Amount">
+      <button class="search" id="bankButton">Add to Bank</button>
+    </form>  
 
-  <form id="bankForm">
-    <input type="text" id="bankInput" placeholder="Amount">
-    <button class="search" id="bankButton">Add to Bank</button>
-  </form>
-  <div id="tradeBankDiv">
-    <div id="tradeDiv">Trade Log </div>
-    <div id="bankDiv">Your Bank Account</div>
-  </div>
+  </h1>
+
   <form id="stockForm">
     <input type="text" id="stockInput" placeholder="Input Stock Ticker">
     <button class="search" id="stockButton">Get Stock Info</button>
     <a target="_blank" href="https://gretlcycu.files.wordpress.com/2013/08/quick-ticker-symbol-list.pdf"> Symbol
       Lookup</a>
   </form>
+
   <div id=stockDivOuter>
     <div id="stockDiv">
-      Current Trade
       <div class="buySellForm">
         <form id="form2">
           <button class="search" id="buyButton">BUY</button>
