@@ -5,8 +5,8 @@
 const stockApi = "N84W2MQHNHRK05UG"
 const stockUrl1 = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=`
 
-const stockUrl2= `&interval=1min&apikey=Z${stockApi}`
-const stockUrlOK= `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=${stockApi}`
+const stockUrl2 = `&interval=1min&apikey=Z${stockApi}`
+const stockUrlOK = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=${stockApi}`
 
 const bankInput = document.querySelector("#bankInput")
 const stockInput = document.querySelector("#stockInput")
@@ -23,6 +23,30 @@ const stockDiv = document.querySelector("#stockDiv")
 const tradeDiv = document.querySelector("#tradeDiv")
 const stockP = document.querySelector("#stockP")
 
+// function getHoursAndMinutes() {
+var date = new Date
+var hours = function getHours() {
+  if (date.getHours().length < 2) {
+    return 0 + date.getHours()
+  } else {
+    return date.getHours()
+  }
+}
+var minutes = function getMinutes() {
+  if (date.getMinutes() < 10) {
+    return `0${date.getMinutes()-2}`
+  } else {
+    return date.getMinutes()-2
+  }
+}
+
+// var minutes = date.getMinutes()
+//   if (hours > 16 || hours < 9) {
+//     return 16+":"+00
+//   } else {
+//     return `${hours}:${minutes}`
+//   }
+// }
 var bankAccount = []
 var stocksOwned = []
 var raysCommission = 0
@@ -33,7 +57,10 @@ stockButton.addEventListener("click", async function () {
   let stockName = stockInput.value.toUpperCase()
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
   let stockPrice = response.data["Time Series (1min)"]
-  let stockTimed = stockPrice["2019-11-22 16:00:00"]["1. open"]
+  let hoursIn = hours()
+  let minutesIn = minutes()
+  console.log(minutesIn)
+  let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
 
   const NewStockP = document.createElement('p')
   NewStockP.innerHTML = `${stockName} ${stockTimed}`
@@ -41,31 +68,34 @@ stockButton.addEventListener("click", async function () {
 
   let stockCharts = document.createElement("img")
   stockCharts.setAttribute("src", `https://c.stockcharts.com/c-sc/sc?s=${stockName}&p=D&b=5&g=0&i=0&r=1574550043277`)
+  stockP.classList.add("chartImg")
   stockP.appendChild(stockCharts)
 
   let stockRec = document.createElement("a")
   let link = document.createTextNode(`${stockName} Recommendation`)
-  stockRec.setAttribute("target","_blank")
+  stockRec.setAttribute("target", "_blank")
   stockRec.appendChild(link)
   stockRec.title = `${stockName} Recommendation`
-  stockRec.href =  `https://www.nasdaq.com/market-activity/stocks/${stockName}/analyst-research`
+  stockRec.href = `https://www.nasdaq.com/market-activity/stocks/${stockName}/analyst-research`
   stockP.appendChild(stockRec)
 })
 
 buyButton.addEventListener("click", async function () {
   event.preventDefault()
-  
+
   let stockName = stockInput.value.toUpperCase()
   stocksOwned.push(stockName)
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
   let stockPrice = response.data["Time Series (1min)"]
-  let stockTimed = stockPrice["2019-11-22 16:00:00"]["1. open"]  
+  let hoursIn = hours()
+  let minutesIn = minutes()
+  let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
   let parsedStockTimed = parseFloat(stockTimed, 10)
 
   if (calculateBank(bankAccount) < parsedStockTimed) {
     alert("Insufficient Funds")
-  }else {
-    raysCommission++ 
+  } else {
+    raysCommission++
     bankAccount.push(-parsedStockTimed)
     let addStocktoBank = calculateBank(bankAccount)
 
@@ -73,16 +103,18 @@ buyButton.addEventListener("click", async function () {
     const addStockToBankDiv = document.createElement("div")
     addStockToBankDiv.innerHTML = `$${addStocktoBank}`
     bankDiv.appendChild(addStockToBankDiv)
-  
+
     const addStockToLog = document.createElement("div")
     addStockToLog.innerHTML = `Bought ${stockName}@${stockTimed}`
     tradeDiv.appendChild(addStockToLog)
   }
 })
 
+
+
 sellButton.addEventListener("click", async function () {
   event.preventDefault()
-  
+
   let stockName = stockInput.value.toUpperCase()
   if (stocksOwned.includes(stockName)) {
 
@@ -90,7 +122,9 @@ sellButton.addEventListener("click", async function () {
 
     let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
     let stockPrice = response.data["Time Series (1min)"]
-    let stockTimed = stockPrice["2019-11-22 16:00:00"]["1. open"]
+    let hoursIn = hours()
+    let minutesIn = minutes()
+    let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
     let parsedStockTimed = parseFloat(stockTimed, 10)
     bankAccount.push(parsedStockTimed)
 
@@ -99,23 +133,26 @@ sellButton.addEventListener("click", async function () {
     const subStockToBankDiv = document.createElement("div")
     subStockToBankDiv.innerHTML = `$${subStocktoBank}`
     bankDiv.appendChild(subStockToBankDiv)
-  
+
     const addStockToLog = document.createElement("div")
     addStockToLog.innerHTML = `Sold ${stockName}@${stockTimed}`
     tradeDiv.appendChild(addStockToLog)
-    stocksOwned.splice(stocksOwned.indexOf(stockName,1))
+    stocksOwned.splice(stocksOwned.indexOf(stockName, 1))
   } else {
-      alert("No shorts allowed")
-    }
+    alert("No shorts allowed")
+  }
 })
 
 function calculateBank(array) {
   let sum = 0
-  for (let i = 0; i < array.length; i++){
+  for (let i = 0; i < array.length; i++) {
     sum += array[i]
   }
   return sum - raysCommission
 }
+
+
+
 
 
 
@@ -128,14 +165,14 @@ bankButton.addEventListener("click", function () {
       alert("Insufficient funds")
     } else {
       bankAccount.push(bankAmount)
-  
+
       let totalBankAmount = calculateBank(bankAccount)
-  
+
       const totalBankAmountDiv = document.createElement("div")
       totalBankAmountDiv.innerHTML = `$${totalBankAmount}`
       bankDiv.appendChild(totalBankAmountDiv)
- 
- 
+
+
       const addedToBankDiv = document.createElement("div")
       addedToBankDiv.innerHTML = "Added bank account:"
       tradeDiv.appendChild(addedToBankDiv)

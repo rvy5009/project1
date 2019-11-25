@@ -7,6 +7,7 @@ body{
 #stockDiv{
   background: blue;
 }
+
 #tradeDiv{
   background:red;
 }
@@ -17,5 +18,30 @@ button{
   cursor: pointer;
 }
 footer{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+
+
+
+}
+#buyButton, #sellButton{
+  padding: 10px;
+  margin: 10px;
+}
+
+.chartImg{
+  display: flex;
+  flex-direction: column;
+}
+#tradeBankDiv{
+  display: inline-flex;
+  flex-direction: row;
+}
+.buySellForm{
+  display: flexbox;
+  display: inline-flex;
+  padding: 5px;
 
 }
