@@ -2,18 +2,20 @@ body{
   text-align: center;
 }
 h1{
-  text-align: center;
+  display: flex;
   background: yellow;
   padding: 20px;
   margin: 20px;
+  align-content: center;
+  justify-content: center;
+  
 
 }
 #bankForm{
-  justify-content: flex-end;
-  background: yellowgreen;
-  position: absolute;
-  top: 0;
   right: 0;
+  top: 10px;
+  position: absolute;
+  background: yellowgreen;
   margin: 10px;
 
 }
@@ -23,25 +25,23 @@ h1{
 }
 #bankDiv{
   background:green;
-  margin: 10px;
+  margin: 5px;
+  width: 100px;
+  font-size: 10px;
   /* display: none;
   position: absolute; */
 }
-
 
 #tradeDiv{
   background:red;
-  margin: 10px;
-  /* display: none;
-  position: absolute; */
-
+  margin: 5px;
+  width: 150px;
+  font-size: 10px;
 }
 #tradeBankDiv{
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  position: absolute;
-  right: 0;
+  display: flex;
+  align-content: center;
+  justify-content: flex-end;
   font-size: 15px; 
 }
 #outerTradeBankDiv{
@@ -59,13 +59,13 @@ footer{
   position: fixed;
   bottom: 0;
   width: 100%;
-
-
-
 }
 #buyButton, #sellButton{
   padding: 10px;
   margin: 10px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
 }
 
 .chartImg{
@@ -74,7 +74,12 @@ footer{
 }
 
 .buySellForm{
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
+  align-content: center;
   padding: 5px;
-
+}
+#balance{
+  position: absolute;
+  left: 5;
 }

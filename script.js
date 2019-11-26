@@ -16,30 +16,12 @@ const bankButton = document.querySelector("#bankButton")
 const buyButton = document.querySelector("#buyButton")
 const sellButton = document.querySelector("#sellButton")
 
-
-
 const bankDiv = document.querySelector("#bankDiv")
 const stockDiv = document.querySelector("#stockDiv")
 const tradeDiv = document.querySelector("#tradeDiv")
 const stockP = document.querySelector("#stockP")
 const calBankDiv = document.querySelector("#calculateBank")
-
-var date = new Date
-var hours = function getHours() {
-  if (date.getHours().length < 2) {
-    return 0 + date.getHours()
-  } else {
-    return date.getHours()
-  }
-}
-
-var minutes = function getMinutes() {
-  if (date.getMinutes() < 10) {
-    return `0${date.getMinutes()-1}`
-  } else {
-    return date.getMinutes()-1
-  }
-}
+const balanceNum = document.querySelector("#balanceNum")
 
 var bankAccount = []
 var stocksOwned = []
@@ -50,12 +32,8 @@ stockButton.addEventListener("click", async function () {
   stockP.innerHTML = ""
   let stockName = stockInput.value.toUpperCase()
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
-  let stockPrice = response.data["Time Series (1min)"]
-  console.log(stockPrice)
-  let hoursIn = hours()
-  let minutesIn = minutes()
-  console.log(minutesIn)
-  let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
+  let stockTime = response.data[`Meta Data`][`3. Last Refreshed`]
+  let stockTimed = response.data["Time Series (1min)"][`${stockTime}`][`1. open`]
 
   const NewStockP = document.createElement('p')
   NewStockP.innerHTML = `${stockName} ${stockTimed}`
@@ -81,10 +59,9 @@ buyButton.addEventListener("click", async function () {
   let stockName = stockInput.value.toUpperCase()
   stocksOwned.push(stockName)
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
-  let stockPrice = response.data["Time Series (1min)"]
-  let hoursIn = hours()
-  let minutesIn = minutes()
-  let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
+  let stockTime = response.data[`Meta Data`][`3. Last Refreshed`]
+  let stockTimed = response.data["Time Series (1min)"][`${stockTime}`][`1. open`]
+
   let parsedStockTimed = parseFloat(stockTimed, 10)
 
   if (calculateBank(bankAccount) < parsedStockTimed) {
@@ -101,11 +78,9 @@ buyButton.addEventListener("click", async function () {
 
     const addStockToLog = document.createElement("div")
     addStockToLog.innerHTML = `Bought ${stockName}@${stockTimed}`
-    tradeDiv.appendChild(addStockToLog)    
+    tradeDiv.appendChild(addStockToLog)
   }
 })
-
-
 
 sellButton.addEventListener("click", async function () {
   event.preventDefault()
@@ -113,13 +88,14 @@ sellButton.addEventListener("click", async function () {
   let stockName = stockInput.value.toUpperCase()
   if (stocksOwned.includes(stockName)) {
 
-    
+
 
     let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
-    let stockPrice = response.data["Time Series (1min)"]
-    let hoursIn = hours()
-    let minutesIn = minutes()
-    let stockTimed = stockPrice[`2019-11-25 ${hoursIn}:${minutesIn}:00`][`1. open`]
+    let stockTime = response.data[`Meta Data`][`3. Last Refreshed`]
+    let stockTimed = response.data["Time Series (1min)"][`${stockTime}`][`1. open`]
+    
+    raysCommission++
+   
     let parsedStockTimed = parseFloat(stockTimed, 10)
     bankAccount.push(parsedStockTimed)
 
@@ -134,7 +110,7 @@ sellButton.addEventListener("click", async function () {
     tradeDiv.appendChild(addStockToLog)
     stocksOwned.splice(stocksOwned.indexOf(stockName, 1))
 
-    raysCommission++
+    
   } else {
     alert("No shorts allowed")
   }
@@ -148,17 +124,12 @@ function calculateBank(array) {
   return sum - raysCommission
 }
 
-
-
-
-
-
 bankButton.addEventListener("click", function () {
   event.preventDefault()
 
   let bankAmount = parseInt(bankInput.value, 10)
   if (bankAmount) {
-    if (calculateBank(bankAccount< 0 )) {
+    if (calculateBank(bankAccount < 0)) {
       alert("Insufficient funds")
     } else {
       bankAccount.push(bankAmount)
@@ -169,10 +140,10 @@ bankButton.addEventListener("click", function () {
       totalBankAmountDiv.innerHTML = `$${totalBankAmount}`
       bankDiv.appendChild(totalBankAmountDiv)
 
-
       const addedToBankDiv = document.createElement("div")
-      addedToBankDiv.innerHTML = "Added bank account:"
+      addedToBankDiv.innerHTML = "Added to bank:"
       tradeDiv.appendChild(addedToBankDiv)
+
     }
   }
 })
