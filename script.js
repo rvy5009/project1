@@ -24,6 +24,7 @@ const calBankDiv = document.querySelector("#calculateBank")
 const balanceNum = document.querySelector("#balanceNum")
 const tradeSelect = document.querySelector("#tradeSelect")
 
+
 var bankAccount = []
 var stocksOwned = []
 var raysCommission = 0
@@ -40,18 +41,18 @@ stockButton.addEventListener("click", async function () {
   NewStockP.innerHTML = `${stockName} ${stockTimed}`
   stockP.appendChild(NewStockP)
 
+  let stockRec = document.createElement("a")
+  let link = document.createTextNode(`Click for ${stockName} Recommendation`)
+  stockRec.setAttribute("target", "_blank")
+  stockRec.appendChild(link)
+  stockRec.title = `Click for ${stockName} Recommendations`
+  stockRec.href = `https://www.nasdaq.com/market-activity/stocks/${stockName}/analyst-research`
+  stockP.appendChild(stockRec)
+
   let stockCharts = document.createElement("img")
   stockCharts.setAttribute("src", `https://c.stockcharts.com/c-sc/sc?s=${stockName}&p=D&b=5&g=0&i=0&r=1574550043277`)
   stockP.classList.add("chartImg")
   stockP.appendChild(stockCharts)
-
-  let stockRec = document.createElement("a")
-  let link = document.createTextNode(`${stockName} Recommendation`)
-  stockRec.setAttribute("target", "_blank")
-  stockRec.appendChild(link)
-  stockRec.title = `${stockName} Recommendation`
-  stockRec.href = `https://www.nasdaq.com/market-activity/stocks/${stockName}/analyst-research`
-  stockP.appendChild(stockRec)
 })
 
 buyButton.addEventListener("click", async function () {
@@ -76,6 +77,7 @@ buyButton.addEventListener("click", async function () {
     tradeSelected.innerHTML = `Bought ${stockName}@${stockTimed} $${addStocktoBank}`
     tradeSelect.appendChild(tradeSelected) 
 
+    document.querySelector("#total").innerHTML = `$${calculateBank(bankAccount)}`
     // const addStockToBankDiv = document.createElement("div")
     // addStockToBankDiv.innerHTML = `$${addStocktoBank}`
     // bankDiv.appendChild(addStockToBankDiv)
@@ -109,6 +111,7 @@ sellButton.addEventListener("click", async function () {
     tradeSelected.innerHTML = `Sold ${stockName}@${stockTimed} $${subStocktoBank}`
     tradeSelect.appendChild(tradeSelected)   
 
+    document.querySelector("#total").innerHTML = `$${calculateBank(bankAccount)}`
     // const subStockToBankDiv = document.createElement("div")
     // subStockToBankDiv.innerHTML = `$${subStocktoBank}`
     // bankDiv.appendChild(subStockToBankDiv)
@@ -140,6 +143,7 @@ bankButton.addEventListener("click", function () {
     if (calculateBank(bankAccount) < 0) {
       alert("Insufficient funds")
     } else {
+
       bankAccount.push(bankAmount)
 
       let totalBankAmount = calculateBank(bankAccount)
@@ -148,9 +152,7 @@ bankButton.addEventListener("click", function () {
       tradeSelected.innerHTML = `Added to Bank: $${totalBankAmount}`
       tradeSelect.appendChild(tradeSelected)
 
-      // const addedToBankDiv = document.createElement("option")
-      // addedToBankDiv.innerHTML = "Added to bank:"
-      // tradeOption.appendChild(addedToBankDiv)
+      document.querySelector("#total").innerHTML = `$${calculateBank(bankAccount)}`
 
     }
   }
