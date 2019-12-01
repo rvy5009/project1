@@ -144,7 +144,16 @@ footer{
   position: absolute;
   left: 5;
 }
-
+#myChart{
+  background-color: black;
+  width: auto;
+}
+@media (max-width:1100px){
+  .chartImg {
+    display: block;
+    padding: 0 0 0 0;
+  }
+}
 @media (max-width:900px){
 
   #bankForm{
@@ -159,17 +168,18 @@ footer{
 }
 
 @media (max-width: 600px){
-
+  h1{
+    font-size: 20px;
+  }
   #buyStockDiv{
     display: flex;
     align-content: center;
     justify-content: center;
   }
 }
+@media (max-width: 375px){
 
-@media (max-width: 1100){
-  .chartImg {
-    display: block;
-    padding: 0;
+  h1{
+    font-size: 20px;
   }
 }

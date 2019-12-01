@@ -1,12 +1,17 @@
-// console.log("hi")
-// chart page = https://c.stockcharts.com/c-sc/sc?s=msft&p=D&b=5&g=0&i=0&r=1574550043277
-// stock rec https://www.nasdaq.com/market-activity/stocks/aapl/analyst-research
-
 const stockApi = "N84W2MQHNHRK05UG"
 const stockUrl1 = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=`
 
 const stockUrl2 = `&interval=1min&apikey=Z${stockApi}`
 const stockUrlOK = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=${stockApi}`
+
+
+const stockUrlChart = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=`
+
+const stockUrlChart2 = `&interval=1min&apikey=Z${stockApi}`
+// const stockUrlChart2 = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&interval=1min&apikey=${stockApi}`
+
+
+
 
 const bankInput = document.querySelector("#bankInput")
 const stockInput = document.querySelector("#stockInput")
@@ -34,7 +39,9 @@ stockButton.addEventListener("click", async function () {
   stockP.innerHTML = ""
   let stockName = stockInput.value.toUpperCase()
   let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
+  console.log(response)
   let stockTime = response.data[`Meta Data`][`3. Last Refreshed`]
+  // console.log(stockTime)
   let stockTimed = response.data["Time Series (1min)"][`${stockTime}`][`1. open`]
 
   const NewStockP = document.createElement('p')
@@ -53,6 +60,59 @@ stockButton.addEventListener("click", async function () {
   stockCharts.setAttribute("src", `https://c.stockcharts.com/c-sc/sc?s=${stockName}&p=D&b=5&g=0&i=0&r=1574550043277`)
   stockP.classList.add("chartImg")
   stockP.appendChild(stockCharts)
+
+  let stockCanvas = document.createElement("canvas")
+  stockCanvas.classList.add("ChartColor")
+  stockP.appendChild(stockCanvas)
+
+
+  let response2 = await axios.get(`${stockUrlChart}${stockName}${stockUrlChart2}`)
+  let stockTimeC = response2.data[`Meta Data`][`3. Last Refreshed`]
+  let stockTimedC = response2.data["Time Series (Daily)"]
+  console.log(stockTimeC)
+  console.log(stockTimedC)
+  let keys = Object.keys(stockTimedC)
+  let correctKeys = keys.reverse()
+  let values = []
+  let correctValues = values.reverse()
+  for (let i = 0; i < keys.length; i++){
+
+    let stocked = response2.data["Time Series (Daily)"][`${keys[i]}`][`1. open`]
+    values.push(stocked)
+    
+  }
+ 
+  var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: correctKeys,
+              datasets: [{
+                  label: `${stockName}`,
+                  data: correctValues,
+                  backgroundColor: 
+                      'rgba(255, 99, 132, .2)',
+                  
+                  borderColor: 
+                      'rgba(255, 99, 132, 1)',
+                  
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: false
+                      }
+                  }]
+              }
+          }
+      });
+
+
+
+
 })
 
 buyButton.addEventListener("click", async function () {
@@ -78,13 +138,6 @@ buyButton.addEventListener("click", async function () {
     tradeSelect.appendChild(tradeSelected) 
 
     document.querySelector("#total").innerHTML = `$${calculateBank(bankAccount)}`
-    // const addStockToBankDiv = document.createElement("div")
-    // addStockToBankDiv.innerHTML = `$${addStocktoBank}`
-    // bankDiv.appendChild(addStockToBankDiv)
-
-    // const addStockToLog = document.createElement("div")
-    // addStockToLog.innerHTML = `Bought ${stockName}@${stockTimed}`
-    // tradeDiv.appendChild(addStockToLog)
   }
 })
 
@@ -93,8 +146,6 @@ sellButton.addEventListener("click", async function () {
 
   let stockName = stockInput.value.toUpperCase()
   if (stocksOwned.includes(stockName)) {
-
-
 
     let response = await axios.get(`${stockUrl1}${stockName}${stockUrl2}`)
     let stockTime = response.data[`Meta Data`][`3. Last Refreshed`]
@@ -112,15 +163,8 @@ sellButton.addEventListener("click", async function () {
     tradeSelect.appendChild(tradeSelected)   
 
     document.querySelector("#total").innerHTML = `$${calculateBank(bankAccount)}`
-    // const subStockToBankDiv = document.createElement("div")
-    // subStockToBankDiv.innerHTML = `$${subStocktoBank}`
-    // bankDiv.appendChild(subStockToBankDiv)
 
-    // const addStockToLog = document.createElement("div")
-    // addStockToLog.innerHTML = `Sold ${stockName}@${stockTimed}`
-    // tradeDiv.appendChild(addStockToLog)
-    // stocksOwned.splice(stocksOwned.indexOf(stockName, 1))
-
+    stocksOwned.splice(stockName,1)
     
   } else {
     alert("No shorts allowed")
